@@ -62,18 +62,25 @@ class CalcAppState extends State<CalcApp> {
   // Función para operaciones individuales (raíz cuadrada, inverso)
   void singleOpe(String text) {
     setState(() {
-      double valor = double.parse(_controller.text);
-      switch (text) {
-        case "√": // Raíz cuadrada
-          _controller.text = sqrt(valor).toString();
-          break;
-        case "1/x": // Inverso
-          if (valor != 0) {
-            _controller.text = (1 / valor).toString();
-          } else {
-            _controller.text = "Error"; // Manejo de división entre 0
-          }
-          break;
+      if (text == "π") {
+        _controller.text = pi.toString(); // Solo muestra el valor de Pi
+      } else {
+        double valor = double.parse(_controller.text);
+        switch (text) {
+          case "√": // Raíz cuadrada
+            _controller.text = sqrt(valor).toString();
+            break;
+          case "1/x": // Inverso
+            if (valor != 0) {
+              _controller.text = (1 / valor).toString();
+            } else {
+              _controller.text = "Error"; // Manejo de división entre 0
+            }
+            break;
+          case "x²": // Potencia al cuadrado
+            _controller.text = pow(valor, 2).toString(); // Eleva al cuadrado
+            break;
+        }
       }
     });
   }
@@ -120,7 +127,7 @@ class CalcAppState extends State<CalcApp> {
       ["4", "5", "6", "*"],
       ["1", "2", "3", "-"],
       [".", "0", "^", "+"],
-      ["=", "%"]
+      ["π", "x²", "=", "%"]
     ];
 
     List<List> funx = [
@@ -129,7 +136,7 @@ class CalcAppState extends State<CalcApp> {
       [numClick, numClick, numClick, opeClick],
       [numClick, numClick, numClick, opeClick],
       [numClick, numClick, opeClick, opeClick], // Potencia
-      [resultOperacion, opeClick] // Resultados y módulo
+      [singleOpe, singleOpe, resultOperacion, opeClick] // Pi y potencia al cuadrado
     ];
 
     AppTheme.colorX = Colors.lightBlue;
@@ -157,7 +164,7 @@ class CalcAppState extends State<CalcApp> {
               ),
               const SizedBox(height: 20),
               // Botones organizados en filas usando la matriz restaurada
-              ...List.generate(labelList.length - 1, (index) => Row(
+              ...List.generate(labelList.length, (index) => Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: List.generate(labelList[index].length, (indexx) {
                   return CalcButton(
@@ -166,19 +173,6 @@ class CalcAppState extends State<CalcApp> {
                   );
                 }),
               )),
-              // Aquí se hace el botón "=" más largo
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2, // Hace el botón "=" más ancho
-                    child: CalcButton(text: labelList[5][0], callback: funx[5][0] as Function),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: CalcButton(text: labelList[5][1], callback: funx[5][1] as Function),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
